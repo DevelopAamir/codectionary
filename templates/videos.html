@@ -1,0 +1,89 @@
+{% extends 'studioskeleton.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load static %}
+{% block title %}{{title}}{% endblock title %}
+{% block videos %}dr-selected{% endblock videos %}
+{% block body %}
+    <link rel="stylesheet" href="/static/css/videos.css">
+    <div class="add-cover">
+        <a href="/upload"><button class="">Add New</button></a>
+       
+    </div>
+    <div class="dialog" id="dialog">
+        <div>
+            <b>Your are about to delete this <br> permanently</b>
+            <p>
+                This is cannot be recoverd. All the Views,<br> Comments, Likes from this will be removed <br> permanently.
+            </p> <br>
+        </div>
+        
+        <span>
+            <button onclick="close_Dila()">Cancel</button>
+            
+            <form action="/delete" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="content" id="id-number">
+                <button>Delete</button>
+            </form>
+        </span>
+    </div>
+    {% for video in contents_uploaded %}
+    <div class="content-tile">
+        <div class="thumbdiv">
+            <img src="/media/{{video.content.thumbnail}}">
+            <div>
+                <div>
+                    <b>{{video.content.title}}</b>
+                </div>
+                <p>{{video.content.date_uploaded}}</p>
+                <div>
+                    
+                    <img class="eidtIcons" src="/static/img/delete.svg" onclick="deleteContent({{video.content.id}})">
+                    <a href="/updatevideo?content={{video.content.id}}"><img class="eidtIcons" src="/static/img/edit.svg"></a>
+                    <a href="/watch?content={{video.content.id}}"><img src="/static/img/videos.svg" class="eidtIcons"></a>
+                </div>
+            </div>
+        </div>
+        <div class="view-sec">
+            <b>
+                Views
+            </b>
+            <p>
+                {{video.views}}
+            </p>
+        </div>
+        <div class="view-sec">
+            <b>
+                Likes
+            </b>
+            <p>
+                {{video.like}}
+            </p>
+        </div>
+    </div> 
+    {% endfor %}
+    <script>
+        async function deleteContent(id){
+            var dialog = document.getElementById('dialog')
+            var input  = document.getElementById('id-number')
+            if(dialog.classList.contains('dialog-on')){
+                dialog.classList.remove('dialog-on')
+                await new Promise(r => setTimeout(r, 500));
+            }
+            
+            dialog.classList.add('dialog-on')
+            input.value = id;
+        }
+        function close_Dila(){
+            var dialog = document.getElementById('dialog')
+            var input  = document.getElementById('id-number')
+            if(dialog.classList.contains('dialog-on')){
+                dialog.classList.remove('dialog-on')
+            }
+            
+            
+            input.value = '';
+        }
+    </script>
+{% endblock body %}

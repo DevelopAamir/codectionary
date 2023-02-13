@@ -1,0 +1,53 @@
+{% extends 'skleton.html' %}
+{% comment %} This is the title of skleton {% endcomment %}
+{% block title %}{{title}}{% endblock title %}
+
+{% comment %} This is the body of skleton {% endcomment %}
+{% block body %}
+{% comment %} this is search bar {% endcomment %}
+    <link rel="stylesheet" href="/static/css/subs.css">
+    <section style="height: 100vh;">
+        <div class="container">
+            <h1>Subscription</h1>
+            <div class="row" id="subs-holder">
+                {% for sub  in subscriptions %}
+                    <div class="subscriptionTile" id="{{sub.id}}">
+                        <div class="name-channel">
+                            <a href="/profile/{{sub.channel_name}}/"><div class="nav-foot profile-photo dr-photo" style="background-image:url(/media/{{creator_profile.channel_logo}})"></div> </a>
+                            <a href="/profile/{{sub.channel_name}}/"><b class="sub-name">{{sub.channel_name}}</b></a>
+                        </div>
+                        <img src="/static/img/delete.svg" onclick="unfollow('{{sub.id}}')" style="cursor: pointer;">
+                    </div>
+                {% endfor %}
+            </div>
+          </div>
+    </section>
+    <script>
+        function unfollow(id){
+            var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+            fetch('/unfollow?creator=' + id, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+            }).then(async(value)=>{
+                status = await value.text();
+                if(status == 'login'){
+                    document.location = '/login';
+                }else if(status == 'followed'){
+                    showToast('Followed')
+                }else if(status == 'removed'){
+                    showToast('Unfollowed')
+                    child = document.getElementById(id);
+                    document.getElementById('subs-holder').removeChild(child)
+
+                }
+            
+            });
+    
+        }
+    </script>
+    
+    <script src="/static/js/text-overflow.js"></script>
+    <script src="/static/js/messages.js"></script>
+{% endblock body %}

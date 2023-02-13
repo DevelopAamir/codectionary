@@ -1,0 +1,56 @@
+.logo{
+    width: 200px;
+    margin: 20px 58px;
+}
+.nav-foot{
+    margin-left: 20px;
+}
+
+.profile-photo{
+    width: 48px;
+    height: 48px;
+    border-radius: 100px;
+    border: 2px solid #05367C;
+    background-image: url("/static/img/person.svg");
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+ 
+}
+
+.profile-photo-reco{
+    margin-left: 0px;
+}
+
+.nav-footer{
+    display:flex;
+    margin-right: 58px;
+    align-items: center;
+}
+
+.navigation{
+    position: fixed;
+    top: 0px;
+    background-color: white;
+    width: 100%;
+    z-index: 1;
+}
+
+@media only screen and (max-width: 600px) {
+    .nav-footer{
+        display:flex;
+        margin-right: 0px;
+    }
+    .logo{
+        width: 130px;
+        margin: 20px 0px;
+    }
+    .nav-foot{
+        margin: 0px 5px;
+    }
+    .profile-photo{
+        width: 38px;
+        height: 38px;
+    }
+}
+

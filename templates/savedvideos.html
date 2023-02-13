@@ -1,0 +1,46 @@
+{% extends 'skleton.html' %}
+{% comment %} This is the title of skleton {% endcomment %}
+{% block title %}{{title}}{% endblock title %}
+
+{% comment %} This is the body of skleton {% endcomment %}
+{% block body %}
+{% comment %} this is search bar {% endcomment %}
+    <style>
+        a{
+            display: inline-block;
+        }
+    </style>
+   
+   
+    <section style="min-height: 100vh">
+        <div class="container videos-lst">
+            <div class="row">
+                {% for content in contents %}
+                    <div class="col">
+                        <a href="/watch?content={{content.id}}">
+                            <div class="videoCard">
+                                <img src="/media/{{content.thumbnail}}" alt="" class="thumbnail">
+                                <div class="video-about">
+                                    <a href="/profile/{{content.creator.channel_name}}/">
+                                        <div class="profile-photo img-fluid" id="{{content.id}}" style="background-image: url(/media/{{content.creator.channel_logo}})"></div>
+                                    </a>
+                                    &nbsp&nbsp
+                                        <div class="vid-title">
+                                            <b class="title-txt">{{content.title}}</b>
+                                            <div class="rating">
+                                              {{content.date_uploaded}}
+                                            </div>                                           
+                                        </div>
+                                    <img src="/static/img/option-icon.svg" class="gray-200">
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+          </div>
+    </section>
+    <script src="/static/js/uihandler.js"></script>
+    <script src="/static/js/text-overflow.js"></script>
+
+{% endblock body %}

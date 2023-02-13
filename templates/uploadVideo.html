@@ -1,0 +1,58 @@
+{% extends 'studioskeleton.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load static %}
+{% block title %}{{title}}{% endblock title %}
+{% block videos %}dr-selected{% endblock videos %}
+{% block body %}
+    <link rel="stylesheet" href="/static/css/upload.css">
+    {% if form.creator.value != creator_profile.id and update %}
+      <script>document.location = '/'</script>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% if messages %}
+            {% for message in messages %}
+                
+                <div class="success" id="error">
+                    {{ message }}
+                    <img src="/static/img/close.svg" onclick="closemessage(id='error')">
+                </div>
+               
+            {% endfor %}
+        {% endif %}
+
+        {% csrf_token %}
+        {{form.media}}
+        {{form.as_div}}
+        {% if update %}
+        <input type="hidden" name="creator" value={{form.creator.value}}>
+        {% else %}
+        <input type="hidden" name="creator" value={{creator_profile.id}}>
+        {% endif %}
+
+        
+        <button type="submit">upload</button>
+    </form>
+    <script src="/static/js/update-profile.js"></script>
+    <script>
+        var doc = document.getElementById('id_creator')
+        doc.remove();
+        labels = document.getElementsByTagName('label');
+        for( var i = 0; i < labels.length; i++ ) {
+            if (labels[i].htmlFor == 'id_creator'){
+                labels[i].remove()
+            }
+                
+        }
+        var vid = document.getElementById('id_video')
+        vid.setAttribute('accept', 'video/mp4,video/x-m4v,video/*')
+        
+        richInitialize();
+        async function richInitialize(){
+            await new Promise(r => setTimeout(r, 50));
+            var textarea = document.getElementById('cke_id_content')
+            textarea.setAttribute('style', 'width:100%')
+        }
+        
+    </script>
+{% endblock body %}

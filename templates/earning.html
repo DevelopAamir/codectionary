@@ -1,0 +1,41 @@
+{% extends 'studioskeleton.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load static %}
+{% block title %}{{title}}{% endblock title %}
+{% block earnings %}dr-selected{% endblock earnings %}
+{% block body %}
+    <link rel="stylesheet" href="/static/css/studio-home.css">
+    <h1 class="h1">
+        Monetization
+    </h1>
+    {% if no_of_contents < 5 or followers < 10 %}
+    <li>
+        No of posts
+        <input type="range" value="{{no_of_contents}}" id="" max="5" class="monetize-slider" disabled>
+    </li>
+        <li>
+            Followers
+            <input type="range" value="{{followers}}" id="" max="10" class="monetize-slider" disabled> 
+        </li>
+       
+        <p class="para">
+            *Upload at least 5 posts and 10 followers to join partners program
+        </p>
+
+    {% else %}
+        <p class="para">
+            <li>Go to Adstrerra</li>
+            <li>Signup and Register you profile url as website</li>
+            <li>Get the code</li>
+            <li>Paste here
+                <br>
+                <br>
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+
+            </li>
+            
+        </p>
+    {% endif %}
+   
+{% endblock body %}

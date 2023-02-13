@@ -1,0 +1,73 @@
+{% extends 'skleton.html' %}
+{% comment %} This is the title of skleton {% endcomment %}
+{% block title %}{{publisher.channel_name}}{% endblock title %}
+{% block description %}{{publisher.about}}{% endblock description %}
+{% comment %} This is the body of skleton {% endcomment %}
+{% block body %}
+{% comment %} this is search bar {% endcomment %}
+         <div>
+            <div class="banner" style="background-image:url('/media/{{publisher.channel_banner}}')"></div>
+            <a href=""><div class="nav-foot profile-photo profile-bg" style="background-image:url('/media/{{publisher.channel_logo}}')"></div> </a>
+            <hr class="pro-line">
+            <div class="showcase">
+                <span class="case">
+                    <div>
+                        <img src="/static/img/like-not.svg" class="showcase-icon">
+                    </div>
+                    <b>{{likes}}</b>
+                </span>
+                <span class="case">
+                    <div>
+                        <img src="/static/img/follow.svg" class="showcase-icon">
+                    </div>
+                    <b>{{followers}}</b>
+                </span>
+                <span class="case">
+                    <div>
+                        <img src="/static/img/videos.svg" class="showcase-icon">
+                    </div>
+                    <b>{{uploads}}</b>
+                </span>
+                <span class="case">
+                    <div>
+                        <img src="/static/img/views.svg" class="showcase-icon">
+                    </div>
+                    <b>{{views}}</b>
+                </span>
+            </div>
+        </div> 
+        {%if  contents%}
+         <h1 class="video-heading pro-vid-header ">Video Uploaded</h1>
+        {%endif%}
+        
+     <section>
+        <div class="container videos-lst l-mg">
+            <div class="row">
+                {% for content in contents %}
+                <div class="col">
+                    <a href="/watch?content={{content.id}}">
+                        <div class="videoCard">
+                            <img src="/media/{{content.thumbnail}}" alt="" class="thumbnail">
+                            <div class="video-about">
+                                <a href="/profile/{{content.creator.channel_name}}/">
+                                    <div class="profile-photo img-fluid" id="{{content.id}}" style="background-image: url(/media/{{content.creator.channel_logo}})"></div>
+                                </a>
+                                &nbsp&nbsp
+                                    <div class="vid-title">
+                                        <b class="title-txt">{{content.title}}</b>
+                                        <div class="rating">
+                                            {{content.date_uploaded}}
+                                        </div>                                           
+                                    </div>
+                                <img src="/static/img/option-icon.svg" class="gray-200">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+            </div>
+          </div>
+    </section> 
+    <script src="/static/js/text-overflow.js"></script>
+
+{% endblock body %}

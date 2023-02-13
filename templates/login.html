@@ -1,0 +1,33 @@
+{% extends 'skleton.html' %}
+{% block title %}{{title}}{% endblock title %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load static %}
+
+
+
+{% block body %}
+<div class="viewpoint">
+    <link rel="stylesheet" href="/static/css/studio.css">
+    <div class="auth-section">
+        <div class="auth-text-head">
+            
+               <b>The best Learning</b>
+               <b>&</b>
+               <b>Teaching Site</b>
+            
+        </div>
+        <form id="openid_login_form" method="post" action="{% provider_login_url 'google' process="login" %}">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button class="social-log-btn" type="submit"><div class="auth-btn"> <img src="/static/img/google.svg" class="auth-icon"> <b class="auth-btn-txt">Continue with Google</b></div></button>     
+        </form>
+        <a href="/updateprofile"><div class="auth-btn"><img src="/static/img/facebook.svg" class="auth-icon"> <b class="auth-btn-txt">Continue with Facebook</b></div></a>
+    </div>
+
+    
+</div>
+{% endblock body %}
+
+
+

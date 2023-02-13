@@ -1,0 +1,66 @@
+{% extends 'skleton.html' %}
+{% comment %} This is the title of skleton {% endcomment %}
+{% block title %}{{title}}{% endblock title %}
+
+{% comment %} This is the body of skleton {% endcomment %}
+{% block body %}
+{% comment %} this is search bar {% endcomment %}
+    <style>
+        a{
+            display: inline-block;
+        }
+    </style>
+    <div>
+        <div class="mbl">
+            {% comment %} {% for sub in subscription|slice:'8' %}
+            <div class="nav-foot profile-photo mbl-subs img-fluid"></div>
+            {% endfor %} {% endcomment %}
+            
+        </div>
+        <div class="searchBar">
+            {% comment %} <div class="nav-foot profile-photo subscrber img-fluid"></div>
+            <div class="nav-foot profile-photo subscrber  img-fluid"></div>
+            <div class="nav-foot profile-photo subscrber  img-fluid"></div>
+            <div class="nav-foot profile-photo subscrber  img-fluid"></div> {% endcomment %}
+            <form action="" class="search-form" method="get">
+                <input type="search" name="search" id="search" value="{{search}}" class="search" placeholder="Search or write a URL"><img src="/static/img/search.svg " id="searchIcon" class="searchIcon">
+            </form>
+            {% comment %} <div class="nav-foot profile-photo subscrber  img-fluid"></div>
+            <div class="nav-foot profile-photo subscrber  img-fluid"></div>
+            <div class="nav-foot profile-photo subscrber  img-fluid"></div>
+            <div class="nav-foot profile-photo subscrber  img-fluid"></div> {% endcomment %}
+        </div>       
+    </div>
+   
+    <section>
+        <div class="container videos-lst">
+            <div class="row">
+                {% for content in contents %}
+                    <div class="col">
+                        <a href="/watch?content={{content.id}}">
+                            <div class="videoCard">
+                                <img src="/media/{{content.thumbnail}}" alt="" class="thumbnail">
+                                <div class="video-about">
+                                    <a href="/profile/{{content.creator.channel_name}}/">
+                                        <div class="profile-photo img-fluid" id="{{content.id}}" style="background-image: url(/media/{{content.creator.channel_logo}})"></div>
+                                    </a>
+                                    &nbsp&nbsp
+                                        <div class="vid-title">
+                                            <b class="title-txt">{{content.title}}</b>
+                                            <div class="rating">
+                                              {{content.date_uploaded}}
+                                            </div>                                           
+                                        </div>
+                                    <img src="/static/img/option-icon.svg" class="gray-200">
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+          </div>
+    </section>
+    <script src="/static/js/uihandler.js"></script>
+    <script src="/static/js/text-overflow.js"></script>
+
+{% endblock body %}

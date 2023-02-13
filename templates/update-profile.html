@@ -1,0 +1,154 @@
+{% extends 'skleton.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load static %}
+{% block title %}{{title}}{% endblock title %}
+
+{% block body %}
+<div class="viewpoint container view-col">
+    <link rel="stylesheet" href="/static/css/studio.css">
+    <b class="title-lg mg-top">Update Profile</b>
+    {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="error" id="error"> 
+                        {{ error }} 
+                        <img src="/static/img/close.svg" onclick="closemessage(id='error')" srcset="">
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    <form class="form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <input type="hidden" name="user" id="id_user" value="{{request.user.id}}">
+         <div>
+            <div class="row-cust">
+                <div class="input-info">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your Email" required="true" value="{{userData.email}}">
+                </div>
+                <div class="input-info">
+                    <label for="name">Your name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required="true" value="{{userData.name}}">
+                </div>
+            </div>
+            
+        </div>
+        <div>
+            <div class="row-cust">
+                
+                <div class="input-info">
+                    <label for="channel"> Channel Name</label>
+                    <input required="true" type="text" name="channel_name" id="channel" placeholder="Enter channel name" onchange="onNameChanged(this.value)" value="{{userData.channel_name}}">
+                </div>
+                <div class="input-info">
+                    <label for="channel-type">Channel Catogary</label>
+                    <select name="channel_catagory" id="channel-type" type="text">
+                        {% if userData %}
+                            <option value="{{userData.channel_catagory}}">{{userData.channel_catagory}}</option>
+                        {% else %}
+                            <option value="Undefined">Select Catogary</option>
+                        {% endif %}
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Education">Education</option>
+                        <option value="Tech">Tech</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="row-cust">
+                <div class="input-info">
+                    <label for="address">Your Street Address</label>
+                    <input required="true" type="text" name="street_address" id="address" placeholder="Enter street address" value="{{userData.street_address}}">
+                </div>
+                <div class="input-info">
+                    <label for="country">Your Country</label>
+                    <select name="country" id="country" required="true" type="text">
+                        {% if userData %}
+                            <option value="{{userData.country}}">{{userData.country}}</option>
+                        {% else %}
+                            <option value="Undefined">Select Country</option>
+                        {% endif %}
+                        
+                        <option value="Nepal">Nepal</option>
+                        <option value="India">India</option>
+                        <option value="Pakistan">Pakistan</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="row-cust">
+                <div class="input-info">
+                    <label for="city">Your City</label>
+                    <select name="city" id="city" required="true" type="text">
+                        {% if userData %}
+                            <option value="{{userData.city}}">{{userData.city}}</option>
+                        {% else %}
+                            <option value="Undefined">Select City</option>
+                        {% endif %}
+                        <option value="Biratnagar">Biratnagar</option>
+                        <option value="Dharan">Dharan</option>
+                        <option value="Dhankutta">Dhankutta</option>
+                    </select>
+                </div>
+                <div class="input-info">
+                    <label for="zip">Your Zip Code</label>
+                    <input required="true" type="number" id="zip" name="zip_code" placeholder="Enter Zip Code" value="{{userData.zip_code}}">
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="row-cust">
+                <div class="input-info">
+                    <label for="date">Date of birth</label>
+                    <input required="true" type="date" id="date" name="date_of_birth" placeholder="Select date of birth" value="{{userData.date_of_birth|date:'Y-m-d'}}">
+                </div>
+                <div class="input-info">
+                    <label for="date">Github</label>
+                    <input type="text" id="date" name="github" placeholder="Enter Github URL" value="{{userData.github}}">
+                </div>
+                
+            </div>
+        </div>
+        {% if userData.channel_banner %}
+        <style>
+            #img-space{
+                background-image: url(/media/{{userData.channel_banner}})
+            }
+            #select-profile{
+                background-image: url(/media/{{userData.channel_logo}})
+            }
+        </style>
+        {% else %}
+        {% endif %}
+        <div class="branding">
+            <b class="title-lg mg-top">Branding</b>
+
+            <div class="img-space" id="img-space" >
+                <input type="file" name="channel_banner" accept="image/png, image/jpeg" id="banner" onchange="onBannerSelected(this.value)">
+                <label for="banner"><img src="/static/img/edit.svg" class="edit-icon mg-25"></label>
+                
+            </div>
+            <div class="select-profile" id="select-profile">
+                <input type="file" name="channel_logo" accept="image/png, image/jpeg" id="profile" onchange="onprofileSelected(this.value)">
+                <label for="profile"><img src="/static/img/edit.svg" class="edit-icon mg-8"></label>
+            </div>
+        </div>
+        <center><b class="title-lg channel-name" id="setted-name">{{userData.channel_name}}</b></center>
+        <div class="input-info about">
+            <label for="about">About</label>
+            <textarea name="about" id="desc" placeholder="Write about your channel...." required="true">{{userData.about}}</textarea>
+        </div> 
+        
+        <div class="submit-btn-box" >
+            <button type="submit">Submit Changes</button>
+        </div>
+    </form> 
+    <script src="/static/js/update-profile.js"></script>
+</div>
+{% endblock body %}
+
+

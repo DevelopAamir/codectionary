@@ -1,0 +1,60 @@
+{% extends 'studioskeleton.html' %}
+{% block title %}{{title}}{% endblock title %}
+{% block home %}dr-selected{% endblock home %}
+
+{% block body %}
+
+<link rel="stylesheet" href="/static/css/videos.css">
+<link rel="stylesheet" href="/static/css/studio-home.css">
+<div class="show-case-std">
+   <div class="followers-card">
+        <img src="/static/img/follow.svg" alt="" srcset="">
+        <b>{{followers}}</b>
+   </div>
+   <div class="followers-card">
+        <img src="/static/img/like-not.svg" alt="" srcset="">
+        <b>{{likes}}</b>
+    </div>
+    <div class="followers-card">
+        <img src="/static/img/views.svg" alt="" srcset="">
+        <b>{{views}}</b>
+    </div>
+</div>
+
+<span class="h1">
+    Most Viewed
+</span>
+    {% for video in contents_uploaded|dictsortreversed:"views"|slice:"3" %}
+        <div class="content-tile tile-std">
+            <div class="thumbdiv">
+                <img src="/media/{{video.content.thumbnail}}">
+                <div>
+                    <div>
+                        <b>{{video.content.title}}</b>
+                    </div>
+                    <p>{{video.content.date_uploaded}}</p>
+                    <div>
+                        <a href="/watch?content={{video.content.id}}"><img src="/static/img/videos.svg" class="eidtIcons"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="view-sec">
+                <b>
+                    Views
+                </b>
+                <p>
+                    {{video.views}}
+                </p>
+            </div>
+            <div class="view-sec">
+                <b>
+                    Likes
+                </b>
+                <p>
+                    {{video.like}}
+                </p>
+            </div>
+        </div> 
+    {% endfor %}
+
+{% endblock body %}

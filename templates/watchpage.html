@@ -1,0 +1,295 @@
+{% extends 'skleton.html' %}
+{% block title %}{{content.title}}{% endblock title %}
+{% block description %}{{content.desciption}}{% endblock description %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load static %}
+{% block body %}
+<style>
+    form{
+        display: flex;
+    }
+    form > button{
+        border: none;
+    }
+    #comment-shower{
+        margin: 0px 10px;
+
+    }
+</style>
+
+
+<div class="cont-sidebar">
+    <div class="content">
+        <h1 class="video-heading">{{content.title}}</h1>
+        <video src="/media/{{content.video}}" id="vid" poster="/media/{{content.thumbnail}}" onmouseover="showController(this.id);" onmouseout="showController(this.id);"></video>
+        <div class="comments" id="comments-box">
+            <div class="video-actions">
+                <div class="actions-leading">
+                    <a href="/profile/{{content.creator.channel_name}}/"><div class="nav-foot profile-photo img-fluid" style="background-image:url(/media/{{content.creator.channel_logo}})"></div></a>
+                    &nbsp  &nbsp
+                    <div>
+                        <b class="rate-number" id="channel_name0">{{content.creator.channel_name}}</b>
+                        <div style="font-size: 11px; font-weight: 600; color: grey;">
+                           {{followers}} Followers
+                        </div>
+                    </div>
+                    
+                    <!-- &nbsp <b class="rate-number" id="rated">1.0</b>
+                    <img src="/static/img/star.svg" alt="" class="star">&nbsp&nbsp
+                    <input type="range" name="" id="rate" class="slidercus" min="1" max="4" onchange="setRating()" value="1"> -->
+    
+                </div>
+                <div class="actions-trailing">
+                    {% if saved %}
+                    <img src="/static/img/save-done.svg" class="act-icons" title="save" id="saved-btn" style="cursor: pointer;" onclick="save()">
+                    {% else %}
+                    <img src="/static/img/save.svg" class="act-icons" title="save" id="saved-btn" style="cursor: pointer;" onclick="save()">
+                    {% endif %}
+                    {% if liked %}
+                        <img src="/static/img/like.svg" class="act-icons" title="like" id="like" style="cursor: pointer;" onclick="like()">
+                    {% else %}
+                        <img src="/static/img/like-not.svg" class="act-icons" title="like" id="like" style="cursor: pointer;" onclick="like()">
+                    {% endif %}
+                    
+                    <img src="/static/img/comment.svg" class="act-icons" title="comment" style="cursor: pointer;" onclick="openComments()" id="comment-btn">
+                    {% if followed == True %}
+                        <img src="/static/img/followed.svg" class="act-icons" id="follow" title="follow" style="cursor: pointer;" onclick="follow()">
+                    {% else %}
+                        <img src="/static/img/follow.svg" class="act-icons" id="follow" title="follow" style="cursor: pointer;" onclick="follow()">
+                    {% endif %}
+                </div>
+            </div>
+            <div  style="display: none;" id="comments-area">
+                <div class="add-comment-box">
+                    <input type="text" placeholder="Write your comment here" id="inputmsg">
+                    <button onclick="addComment()">Submit</button>
+                </div>
+                <div id="comment-shower">
+                    <div class="comment-place">
+                        <div class="profile-holder">
+                            <div class="nav-foot profile-photo img-fluid commentor-profile" style="background-image:url(/media/{{content.creator.channel_logo}})"></div>
+                            <b>Md Aamir</b>
+                        </div>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, quos alias dolores qui laborum adipisci.
+                        </p>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="content-loaded">
+            {{content.content|safe}}
+        </div>
+        <div class="social">
+            <a href="{{content.github}}">
+                <img src="/static/img/github.svg" title="github" class="social-icon">
+            </a>
+            <a href="{{content.linkedin}}">
+                <img src="/static/img/linkedin.svg" title="linkedin" class="social-icon">
+            </a>
+        </div>
+    </div>
+    <div class="side-bar">
+        <h1 class="sugestion-heading">Suggestions</h1>
+        {% for suggest in suggestion.all|slice:"10" %}
+            {% if content.id != suggest.id %}
+                <div class="col">
+                    <a href="/watch?content={{suggest.id}}">
+                        <div class="videoCard videoCard-reco">
+                            <img src="/media/{{suggest.thumbnail}}" alt="" class="thumbnail-reco img-fluid">
+                            <div class="video-about video-about-reco">
+                                <div class="nav-foot profile-photo profile-photo-reco img-fluid" style="background-image:url('/media/{{suggest.creator.channel_logo}}')"></div>&nbsp&nbsp
+                                <div class="vid-title-reco">
+                                    <b class="title-txt">{{suggest.title}}</b>
+                                    <div class="rating">
+                                        {{suggest.date_uploaded}}
+                                    </div>
+                                    
+                                </div>
+                                <img src="/static/img/option-icon.svg" class="gray-200">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+            
+        {% endfor %}
+    </div>
+</div>
+<script>
+    function like(){
+        var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        
+        fetch('/like' + document.location.search, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        }).then(async(value)=>{
+            status = await value.text();
+            if(status == 'login'){
+                document.location = '/login';
+            }else if(status == 'liked'){
+                document.getElementById('like').setAttribute('src', '/static/img/like.svg')
+                showToast('Liked')
+            }else if(status == 'removed'){
+                document.getElementById('like').setAttribute('src', '/static/img/like-not.svg')
+                showToast('Removed from Liked')
+            }
+           
+        });
+    
+    }
+    function follow(){
+        var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        
+        fetch('/follow' + document.location.search, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        }).then(async(value)=>{
+            status = await value.text();
+            if(status == 'login'){
+                document.location = '/login';
+            }else if(status == 'followed'){
+                document.getElementById('follow').setAttribute('src', '/static/img/followed.svg')
+                showToast('Followed')
+            }else if(status == 'removed'){
+                document.getElementById('follow').setAttribute('src', '/static/img/follow.svg')
+                showToast('Unfollowed')
+            }
+           
+        });
+    
+    }
+    function save(){
+        var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        
+        fetch('/save' + document.location.search, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        }).then(async(value)=>{
+            status = await value.text();
+            if(status == 'login'){
+                document.location = '/login';
+            }else if(status == 'saved'){
+                document.getElementById('saved-btn').setAttribute('src', '/static/img/save-done.svg')
+                showToast('Saved')
+            }else if(status == 'removed'){
+                document.getElementById('saved-btn').setAttribute('src', '/static/img/save.svg')
+                showToast('UnSaved')
+            }
+           
+        });
+    
+    }
+    function openComments(){
+        getComments()
+        var doc = document.getElementById('comments-box')
+        if(doc.classList.contains('on')){
+            doc.classList.remove('on')
+            document.getElementById('comments-area').style.display = 'none';
+            document.getElementById('comment-btn').setAttribute('src', '/static/img/comment.svg')
+        }else{
+            doc.classList.add('on')
+            document.getElementById('comments-area').style.display = 'block';
+            document.getElementById('comment-btn').setAttribute('src', '/static/img/comment-open.svg')
+        }
+    }
+    function addComment(){
+        var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        
+        can_be_posted = true;
+        document.getElementById('inputmsg').value.toString().split(' ').forEach((value)=>{
+            if(value.length > 20){
+                can_be_posted = false;
+            }
+        })
+        if(can_be_posted && (document.getElementById('inputmsg').value.toString() != '') ){
+            fetch('/comment' + document.location.search + '&msg=' + document.getElementById('inputmsg').value, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+            }).then(async(value)=>{
+                status = await value.text();
+                if(status == 'login'){
+                    document.location = '/login';
+                }else if(status == 'commented'){
+                    getComments()
+                    showToast('Comment Added')
+                }else if(status == 'removed'){
+                    document.getElementById('follow').setAttribute('src', '/static/img/follow.svg')
+                }
+            
+            });
+        }else{
+            showToast('Spam detected!')
+        }
+    }
+    async function getComments(){
+        var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        
+        fetch('/comment' + document.location.search, {
+            method: "GET",
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        }).then(async(value)=>{
+            data = await value.json();
+            obj = JSON.parse(JSON.stringify(data));
+            document.getElementById('comment-shower').innerHTML = '';
+            owner_id = '{{content.creator.user.id}}'
+            obj.forEach(a => {
+               if(a['commentor']['id'] == owner_id){
+                ele =  '<div class="comment-place bef" id="msg-com">'+
+                        '<div class="profile-holder">'+
+                           '<a href="/profile/{{content.creator.channel_name}}/"> <div class="nav-foot profile-photo img-fluid commentor-profile" style="background-image:url(/media/{{content.creator.channel_logo}})"></div></a>'+
+                           ' <b>'+ a['commentor']['name']+ '</b>'+ 
+                           '<img src= "/static/img/varified.svg" style="margin-left:5px"></img>' + 
+                        '</div>'+
+                        '<p>'+
+                           a['text']+
+                       ' </p>'+
+                       '<span class="comment-date">'+ a['time'] +'</span>'+
+                    '</div>';
+                document.getElementById('comment-shower').innerHTML =document.getElementById('comment-shower').innerHTML + ele
+               }else{
+                ele =  '<div class="comment-place bef" id="msg-com">'+
+                        '<div class="profile-holder">'+
+                           ' <div class="nav-foot profile-photo img-fluid commentor-profile"></div>'+
+                           ' <b>'+ a['commentor']['name']+ '</b>'+ 
+                           
+                        '</div>'+
+                        '<p>'+
+                           a['text']+
+                       ' </p>'+
+                       '<span class="comment-date">'+ a['time'] +'</span>'+
+                    '</div>';
+                document.getElementById('comment-shower').innerHTML =document.getElementById('comment-shower').innerHTML + ele
+               }
+                
+                
+            });
+            await new Promise(r => setTimeout(r, 20));
+            for(var i = 0; i < document.getElementsByClassName('comment-place').length; i++){
+                document.getElementsByClassName('comment-place')[i].classList.replace('bef', 'af')
+            }
+            
+     
+            
+        });
+    }
+</script>
+<script src="/static/js/videohandlers.js"></script>
+<script src="/static/js/text-overflow.js"></script>
+<script src="/static/js/messages.js"></script>
+
+{% endblock body %}
